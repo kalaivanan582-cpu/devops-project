@@ -1,0 +1,27 @@
+
+name: Git Release Lab
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Display release information
+        run: |
+          echo "Release tag: $GITHUB_REF_NAME"
+          echo "Commit SHA: $GITHUB_SHA"
+
+      - name: Validate deployment configuration
+        run: |
+          test -f deployment-test.conf
+          grep -q '^DEPLOY_ENV=production$' deployment-test.conf
+          echo "Configuration validation passed"
